@@ -1,14 +1,27 @@
 package com.ems.ems_app.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
-@Data
-@AllArgsConstructor
+
+//@Data
 public class GroupDTO {
     private String name;
     private String description;
 
-    // Getters and Setters
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

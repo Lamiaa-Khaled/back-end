@@ -1,16 +1,23 @@
 package com.ems.ems_app.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-@Data
-@AllArgsConstructor
 public class ResourceDirectoryDTO {
     private String name;
     private String creator;
 
     // Getters and Setters
-}
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+}

@@ -1,49 +1,59 @@
 package com.ems.ems_app.services;
-
 import com.ems.ems_app.dto.CourseDTO;
 import com.ems.ems_app.entities.Course;
-import com.ems.ems_app.entities.Group;
+import com.ems.ems_app.entities.Resource;
 import com.ems.ems_app.entities.ResourceDirectory;
+import com.ems.ems_app.entities.Group;
 import com.ems.ems_app.repos.CourseRepository;
-import com.ems.ems_app.repos.GroupRepository;
-import com.ems.ems_app.repos.ResourceDirectoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CourseService {
+
     private final CourseRepository courseRepository;
-    private final GroupRepository groupRepository;
-    private final ResourceDirectoryRepository resourceDirectoryRepository;
 
-    public CourseService(CourseRepository courseRepository, GroupRepository groupRepository,
-                         ResourceDirectoryRepository resourceDirectoryRepository) {
+    public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
-        this.groupRepository = groupRepository;
-        this.resourceDirectoryRepository = resourceDirectoryRepository;
+    }
+    @Transactional
+
+    public void createCourse(CourseDTO courseDto, Resource avatar, Group group, ResourceDirectory resourceDirectory) {
+        Course course = new Course();
+        course.setCode(courseDto.getName()); // Assuming `code` is derived from `name`
+        course.setName(courseDto.getName());
+        course.setAvatar(avatar);
+        course.setGroup(group);
+        course.setResourceDirectory(resourceDirectory);
+        courseRepository.save(course);
     }
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
-    }
-
-    public Optional<Course> getCourseByCode(String code) {
+    public Course getCourseByCode(String code) {
         return courseRepository.findById(code);
     }
 
-    public Course createCourse(CourseDTO courseDTO) {
-        Group group = groupRepository.findById(UUID.fromString(courseDTO.getGroupName())).orElseThrow();
-        ResourceDirectory resourceDirectory = resourceDirectoryRepository.findById(UUID.fromString(courseDTO.getResourceDirectoryName())).orElseThrow();
+    public List<Course> getAllCourses() {
+        List<Course> courses = courseRepository.findAll();
+        System.out.println("Retrieved courses: " + courses);
+        return courses;
+    }
+    @Transactional
 
-        Course course = new Course();
-        course.setCode(courseDTO.getCode());
-        course.setName(courseDTO.getName());
-        course.setAvatarId(courseDTO.getAvatarId());
-        course.setGroup(group);
-        course.setResourceDirectory(resourceDirectory);
-        return courseRepository.save(course);
+    public void updateCourse(String code, CourseDTO courseDto, Resource avatar, Group group, ResourceDirectory resourceDirectory) {
+        Course course = courseRepository.findById(code);
+        if (course != null) {
+            course.setName(courseDto.getName());
+            course.setAvatar(avatar);
+            course.setGroup(group);
+            course.setResourceDirectory(resourceDirectory);
+            courseRepository.update(course);
+        }
+    }
+@Transactional
+    public void deleteCourse(String code) {
+        courseRepository.deleteById(code);
     }
 }
+
+

@@ -1,34 +1,48 @@
 package com.ems.ems_app.services;
 
+import com.ems.ems_app.dto.ResourceDirectoryDTO;
 import com.ems.ems_app.entities.ResourceDirectory;
 import com.ems.ems_app.repos.ResourceDirectoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ResourceDirectoryService {
-    private final ResourceDirectoryRepository resourceDirectoryRepository;
 
-    public ResourceDirectoryService(ResourceDirectoryRepository resourceDirectoryRepository) {
-        this.resourceDirectoryRepository = resourceDirectoryRepository;
+    private final ResourceDirectoryRepository repository;
+
+    public ResourceDirectoryService(ResourceDirectoryRepository repository) {
+        this.repository = repository;
+    }
+
+    public void createResourceDirectory(ResourceDirectoryDTO dto) {
+        ResourceDirectory resourceDirectory = new ResourceDirectory();
+        resourceDirectory.setName(dto.getName());
+        resourceDirectory.setCreator(dto.getCreator());
+        repository.save(resourceDirectory);
+    }
+
+    public ResourceDirectory getResourceDirectoryById(UUID id) {
+        return repository.findById(id);
     }
 
     public List<ResourceDirectory> getAllResourceDirectories() {
-        return resourceDirectoryRepository.findAll();
+        return repository.findAll();
     }
-
-    public Optional<ResourceDirectory> getResourceDirectoryById(UUID id) {
-        return resourceDirectoryRepository.findById(id);
+@Transactional
+    public void updateResourceDirectory(UUID id, ResourceDirectoryDTO dto) {
+        ResourceDirectory resourceDirectory = repository.findById(id);
+        if (resourceDirectory != null) {
+            resourceDirectory.setName(dto.getName());
+            resourceDirectory.setCreator(dto.getCreator());
+            repository.update(resourceDirectory);
+        }
     }
-
-    public ResourceDirectory createOrUpdateResourceDirectory(ResourceDirectory resourceDirectory) {
-        return resourceDirectoryRepository.save(resourceDirectory);
-    }
-
+//@Transactional
     public void deleteResourceDirectory(UUID id) {
-        resourceDirectoryRepository.deleteById(id);
+        repository.deleteById(id);
     }
 }

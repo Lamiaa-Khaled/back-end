@@ -7,39 +7,37 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class CourseRepository {
+
     @PersistenceContext
     private EntityManager entityManager;
+    @Transactional
+
+    public void save(Course course) {
+        entityManager.persist(course);
+    }
+
+    public Course findById(String code) {
+        return entityManager.find(Course.class, code);
+    }
 
     public List<Course> findAll() {
-        return entityManager.createQuery("FROM Course", Course.class).getResultList();
+        return entityManager.createQuery("SELECT c FROM Course c", Course.class).getResultList();
     }
-
-    public Optional<Course> findById(String code) {
-        return Optional.ofNullable(entityManager.find(Course.class, code));
-    }
-
     @Transactional
-    public Course save(Course course) {
-        if (course.getCode() == null) {
-            throw new IllegalArgumentException("Course code cannot be null");
-        }
-        if (entityManager.find(Course.class, course.getCode()) == null) {
-            entityManager.persist(course);
-        } else {
-            entityManager.merge(course);
-        }
-        return course;
-    }
 
+    public void update(Course course) {
+        entityManager.merge(course);
+    }
     @Transactional
+
     public void deleteById(String code) {
-        Course course = entityManager.find(Course.class, code);
+        Course course = findById(code);
         if (course != null) {
             entityManager.remove(course);
         }
     }
 }
+

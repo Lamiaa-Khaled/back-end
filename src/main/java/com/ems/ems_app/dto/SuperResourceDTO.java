@@ -1,14 +1,32 @@
 package com.ems.ems_app.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-import java.util.UUID;
-@Data
-@AllArgsConstructor
 public class SuperResourceDTO {
-    private String data;
-    private String resourceId;
+
+    private byte[] data;
+    private String resourceName;
+
+    public SuperResourceDTO() {}
+
+    public SuperResourceDTO(byte[] data, String resourceName) {
+        this.data = data;
+        this.resourceName = resourceName;
+    }
 
     // Getters and Setters
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
 }
