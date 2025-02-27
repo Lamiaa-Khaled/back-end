@@ -40,6 +40,11 @@ public class GlobalExceptionHandler {
 
     // Add more exception handlers as needed (e.g., for validation exceptions)
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         // Log the exception for debugging purposes
