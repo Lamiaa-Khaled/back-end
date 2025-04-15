@@ -1,5 +1,6 @@
 package com.ems.ems_app.services;
 
+<<<<<<< HEAD
 import com.ems.ems_app.dto.requestDTO.CourseRequestDTO;
 import com.ems.ems_app.dto.responseDTO.CourseResponseDTO;
 import com.ems.ems_app.entities.Course;
@@ -12,26 +13,48 @@ import com.ems.ems_app.repos.ResourceDirectoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+=======
+import com.ems.ems_app.dto.CourseDTO;
+import com.ems.ems_app.entities.Course;
+import com.ems.ems_app.entities.Group;
+import com.ems.ems_app.entities.ResourceDirectory;
+import com.ems.ems_app.repos.CourseRepository;
+import com.ems.ems_app.repos.GroupRepository;
+import com.ems.ems_app.repos.ResourceDirectoryRepository;
+import org.springframework.stereotype.Service;
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+<<<<<<< HEAD
 import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
 
+=======
+
+@Service
+public class CourseService {
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa
     private final CourseRepository courseRepository;
     private final GroupRepository groupRepository;
     private final ResourceDirectoryRepository resourceDirectoryRepository;
 
+<<<<<<< HEAD
     @Autowired
     public CourseService(CourseRepository courseRepository, GroupRepository groupRepository, ResourceDirectoryRepository resourceDirectoryRepository) {
+=======
+    public CourseService(CourseRepository courseRepository, GroupRepository groupRepository,
+                         ResourceDirectoryRepository resourceDirectoryRepository) {
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa
         this.courseRepository = courseRepository;
         this.groupRepository = groupRepository;
         this.resourceDirectoryRepository = resourceDirectoryRepository;
     }
 
+<<<<<<< HEAD
     public CourseResponseDTO getCourseByCode(String code) {
         Optional<Course> courseOptional = courseRepository.findById(code);
         if (courseOptional.isPresent()) {
@@ -97,3 +120,26 @@ public class CourseService {
         courseRepository.deleteById(code);
     }
 }
+=======
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+
+    public Optional<Course> getCourseByCode(String code) {
+        return courseRepository.findById(code);
+    }
+
+    public Course createCourse(CourseDTO courseDTO) {
+        Group group = groupRepository.findById(UUID.fromString(courseDTO.getGroupName())).orElseThrow();
+        ResourceDirectory resourceDirectory = resourceDirectoryRepository.findById(UUID.fromString(courseDTO.getResourceDirectoryName())).orElseThrow();
+
+        Course course = new Course();
+        course.setCode(courseDTO.getCode());
+        course.setName(courseDTO.getName());
+        course.setAvatarId(courseDTO.getAvatarId());
+        course.setGroup(group);
+        course.setResourceDirectory(resourceDirectory);
+        return courseRepository.save(course);
+    }
+}
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa

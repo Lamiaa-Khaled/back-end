@@ -1,5 +1,6 @@
 package com.ems.ems_app.services;
 
+<<<<<<< HEAD
 import com.ems.ems_app.dto.requestDTO.ResourceDirectoryRequestDTO;
 import com.ems.ems_app.dto.responseDTO.DirectoryWithResourcesDTO;
 import com.ems.ems_app.dto.responseDTO.ResourceDirectoryResponseDTO;
@@ -52,10 +53,29 @@ public class ResourceDirectoryService {
     }
 
 
+=======
+import com.ems.ems_app.entities.ResourceDirectory;
+import com.ems.ems_app.repos.ResourceDirectoryRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class ResourceDirectoryService {
+    private final ResourceDirectoryRepository resourceDirectoryRepository;
+
+    public ResourceDirectoryService(ResourceDirectoryRepository resourceDirectoryRepository) {
+        this.resourceDirectoryRepository = resourceDirectoryRepository;
+    }
+
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa
     public List<ResourceDirectory> getAllResourceDirectories() {
         return resourceDirectoryRepository.findAll();
     }
 
+<<<<<<< HEAD
     public void createResourceDirectory(ResourceDirectoryRequestDTO resourceDirectoryRequestDTO) {
         ResourceDirectory resourceDirectory = new ResourceDirectory();
         resourceDirectory.setId(UUID.randomUUID());
@@ -76,6 +96,14 @@ public class ResourceDirectoryService {
         resourceDirectory.setBaseDirId(resourceDirectoryRequestDTO.getBaseDirId());
         resourceDirectory.setUpdatedAt(LocalDateTime.now());
         resourceDirectoryRepository.update(resourceDirectory);
+=======
+    public Optional<ResourceDirectory> getResourceDirectoryById(UUID id) {
+        return resourceDirectoryRepository.findById(id);
+    }
+
+    public ResourceDirectory createOrUpdateResourceDirectory(ResourceDirectory resourceDirectory) {
+        return resourceDirectoryRepository.save(resourceDirectory);
+>>>>>>> 09c6eba79e900850b77163b30bf5dacde38a56fa
     }
 
     public void deleteResourceDirectory(UUID id) {
