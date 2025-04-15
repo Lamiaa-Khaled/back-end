@@ -13,12 +13,13 @@ import javax.sql.DataSource;
 
 import com.ems.ems_app.entities.Group;
 import com.ems.ems_app.exceptions.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import com.ems.ems_app.entities.Course;
 import com.ems.ems_app.entities.ResourceDirectory;
 import org.springframework.transaction.annotation.Transactional;
-
+@Slf4j
 @Repository
 public class CourseRepository {
 
@@ -112,6 +113,45 @@ public class CourseRepository {
             throw new RepositoryException("Error deleting course: " + code, e);
         }
     }
+    private static final String SELECT_BY_CODE_SQL = """
+            SELECT  code, name
+            FROM course
+            WHERE code = ?
+            """;
+    public Optional<Course> findByCode(String code) {
+        log.debug("Attempting to find course by code: {}", code);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SELECT_BY_CODE_SQL)) {
+
+            ps.setString(1, code); // Set the code parameter
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Found a course, map it and return
+                    Course course = mapRow(rs);
+                    log.debug("Found course: {}", course);
+                    return Optional.of(course);
+                } else {
+                    // No course found with this code
+                    log.debug("No course found with code: {}", code);
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Database error finding Course by code={}: {}", code, e.getMessage(), e);
+            // Re-throw as a runtime exception to signal a layer failure
+            throw new RuntimeException("Database error while finding Course by code", e);
+        }
+    }
+
+    private Course mapRow(ResultSet rs) throws SQLException {
+        Course course = new Course();
+        course.setCode(rs.getString("code"));
+        return course;
+    }
+
+
+
+
 
     private Course mapRowToCourse(ResultSet rs) throws SQLException {
         Course course = new Course();
